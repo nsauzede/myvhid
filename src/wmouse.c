@@ -2,15 +2,19 @@
 #include <stdlib.h>
 
 #ifdef SDL
+#include <SDL.h>
 #else
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #endif
 
+void myvhid_mouseMove(int x, int y) {
 #ifdef SDL
+	SDL_Init(SDL_INIT_EVERYTHING);
+	SDL_WarpMouseGlobal(x, y);
+	SDL_Delay(1000);
+	SDL_Quit();
 #else
-void myvhid_mouseMove(int x, int y)
-{
 	Display *display = XOpenDisplay(0);
 
 	if(display == 0) {
@@ -19,8 +23,8 @@ void myvhid_mouseMove(int x, int y)
 	}
 	XWarpPointer(display, None, None, 0, 0, 0, 0, x, y);
 	XCloseDisplay(display);
-}
 #endif
+}
 
 int main() {
 	myvhid_mouseMove(128, 128);

@@ -65,7 +65,7 @@ int myvhid_read_mouse(void *opaque, int *x, int *y, int *buttons) {
 	Display *display = opaque;
 	//actual movement
 	int ret = XTestFakeMotionEvent(display, -1, *x, *y, 0);
-	printf("ret=%d\n");
+	printf("ret=%d\n", ret);
 	*buttons = 0; // ??
 #endif
 	return result;
