@@ -71,7 +71,7 @@ int myvhid_read_mouse(void *opaque, int *x, int *y, int *buttons) {
 	return result;
 }
 
-int main () {
+int main(int argc, char *argv[]) {
 	void *ctx = myvhid_init();
 	while (1) {
 		int x = -1, y = -1, buttons = -1;
