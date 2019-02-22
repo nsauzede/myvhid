@@ -26,7 +26,7 @@ void myvhid_mouseMove(int x, int y) {
 #endif
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 	myvhid_mouseMove(128, 128);
 	return 0;
 }
