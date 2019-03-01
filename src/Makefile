@@ -1,4 +1,7 @@
-TARGET:=wmouse
+TARGET:=
+TARGET+=wmouse
+TARGET+=rmouse
+TARGET+=rmousesdl
 
 SDL:=1
 ifdef SDL
