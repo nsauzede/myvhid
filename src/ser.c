@@ -106,7 +106,8 @@ int main(int argc, char *argv[]) {
 			}
 			int x = coord[0];
 			int y = coord[1];
-			printf("warp to %d:%d\n", x, y);
+			static int count = 0;
+			printf("warp to %d:%d #%d\n", x, y, count++);
 			SDL_WarpMouseGlobal(x, y);
 			SDL_Delay(20);
 		}
