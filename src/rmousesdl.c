@@ -32,6 +32,10 @@ int main(int argc, char *argv[]) {
                                         0x000000FF,
                                         0xFF000000);
 	sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w, h);
+	SDL_DisplayMode dm;
+	SDL_GetDesktopDisplayMode(0, &dm);
+	int maxw = dm.w;
+	int maxh = dm.h;
 #endif
 	if (!screen) {
 		printf("failed to init SDL\n");
@@ -77,6 +81,9 @@ int main(int argc, char *argv[]) {
 				} else {
 					printf("mouse motion @%d:%d +%d:%d #%d\n", x, y, xrel, yrel, count++);
 //					printf("%d,%d #%d\n", xrel, yrel, count++);
+					int xw = (float)maxw * xrel / 65535;
+					int yw = (float)maxh * yrel / 65535;
+					SDL_SetWindowPosition(sdlWindow, xw, yw);
 				}
 			}
 		}

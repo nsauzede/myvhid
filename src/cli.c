@@ -111,26 +111,40 @@ int main(int argc, char *argv[]) {
 				}
 			}
 			if (event.type == SDL_MOUSEMOTION) {
-				int x, y;
-				int xrel, yrel;
+				Sint32 x, y;
+				Sint32 xrel, yrel;
 				x = event.motion.x;
 				y = event.motion.y;
 				xrel = event.motion.xrel;
 				yrel = event.motion.yrel;
+				static Sint32 x0 = -1, y0 = -1;
 				static int count = 0;
 				if (!grab) {
 					grab = SDL_TRUE;
 					SDL_SetRelativeMouseMode(grab);
+					x0 = xrel;
+					y0 = yrel;
+//					SDL_GetGlobalMouseState(&x0, &y0);
+//					printf("grab mouse motion @%d:%d\n", x0, y0);
+					printf("grab mouse @%d:%d +%d:%d\n", x, y, xrel, yrel);
 				} else {
-					printf("mouse motion @%d:%d +%d:%d #%d\n", x, y, xrel, yrel, count++);
+//					if (x0 != -1 && y0 != -1) {
+					Sint32 dx = xrel - x0;
+					Sint32 dy = yrel - y0;
+//					printf("mouse motion @%d:%d +%d:%d #%d\n", x, y, xrel, yrel, count++);
+//					printf("mouse motion @%d:%d +%d:%d #%d\n", xrel, yrel, dx, dy, count++);
+					printf("mouse motion %d:%d @%d:%d +%d:%d #%d\n", x0, y0, xrel, yrel, dx, dy, count++);
 					int coord[2];
-					coord[0] = xrel;
-					coord[1] = yrel;
+					coord[0] = dx;
+					coord[1] = dy;
 					n = SSL_write(ssl, coord, sizeof(coord));
 					if (n != sizeof(coord)) {
 						printf("ssl write failed\n");
 						exit(1);
 					}
+//					}
+					x0 = xrel;
+					y0 = yrel;
 				}
 			}
 		}
