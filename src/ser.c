@@ -98,16 +98,23 @@ int main(int argc, char *argv[]) {
 			printf("failed to SSL write\n");
 			exit(1);
 		}
+		static int x0, y0;
+		SDL_GetGlobalMouseState(&x0, &y0);
+		printf("Initial mouse %d:%d\n", x0, y0);
 		while (1) {
 			int coord[2];
 			if ((n = SSL_read(ssl, coord, sizeof(coord))) != sizeof(coord)) {
 				printf("failed to SSL read\n");
-				exit(1);
+				break;
 			}
-			int x = coord[0];
-			int y = coord[1];
+			int dx = coord[0];
+			int dy = coord[1];
 			static int count = 0;
-			printf("warp to %d:%d #%d\n", x, y, count++);
+			int x = x0 + dx;
+			int y = y0 + dy;
+			x0 = x;
+			y0 = y;
+			printf("warp to @%d:%d +%d:%d #%d\n", x, y, dx, dy, count++);
 			SDL_WarpMouseGlobal(x, y);
 			SDL_Delay(20);
 		}
