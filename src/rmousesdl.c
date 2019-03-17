@@ -69,21 +69,29 @@ int main(int argc, char *argv[]) {
 				}
 			}
 			if (event.type == SDL_MOUSEMOTION) {
-				x = event.motion.x;
-				y = event.motion.y;
-				int xrel, yrel;
-				xrel = event.motion.xrel;
-				yrel = event.motion.yrel;
-				static int count = 0;
 				if (!grab) {
 					grab = SDL_TRUE;
+#if 1
 					SDL_SetRelativeMouseMode(grab);
+#else
+					SDL_ShowCursor(!grab);
+					SDL_SetWindowGrab(sdlWindow, grab);
+#endif
 				} else {
-					printf("mouse motion @%d:%d +%d:%d #%d\n", x, y, xrel, yrel, count++);
+					int xm = event.motion.x;
+					int ym = event.motion.y;
+					int xrel = event.motion.xrel;
+					int yrel = event.motion.yrel;
+					static int count = 0;
 //					printf("%d,%d #%d\n", xrel, yrel, count++);
 					int xw = (float)maxw * xrel / 65535;
 					int yw = (float)maxh * yrel / 65535;
-					SDL_SetWindowPosition(sdlWindow, xw, yw);
+					double xf = (double)xrel / 65535;
+					double yf = (double)yrel / 65535;
+//					SDL_SetWindowPosition(sdlWindow, xw, yw);
+					printf("mouse motion @%d:%d +%d:%d /%d:%d %%%.2f:%.2f #%d\n", xm, ym, xrel, yrel, xw, yw, xf, yf, count++);
+					x = xf * w;
+					y = yf * h;
 				}
 			}
 		}
@@ -94,14 +102,22 @@ int main(int argc, char *argv[]) {
 //			printf("mouse pos %d %d\n", x, y);
 			last_x = x;
 			last_y = y;
+
+			SDL_Rect rect;
+			rect.x = 0;
+			rect.y = 0;
+			rect.w = w;
+			rect.h = h;
+			Uint32 col = SDL_MapRGB(screen->format, 128, 0, 0);
+			SDL_FillRect(screen, &rect, col);
+
+			rect.x = x;
+			rect.y = y;
+			rect.w = 1;
+			rect.h = 1;
+			col = SDL_MapRGB(screen->format, 128, 128, 128);
+			SDL_FillRect(screen, &rect, col);
 		}
-		SDL_Rect rect;
-		rect.x = 0;
-		rect.y = 0;
-		rect.w = w;
-		rect.h = h;
-		Uint32 col = SDL_MapRGB(screen->format, 128, 0, 0);
-		SDL_FillRect(screen, &rect, col);
 #ifdef SDL1
 		SDL_UpdateRect(screen, 0, 0, 0, 0);
 #else
